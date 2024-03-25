@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Game Dare</title>
+</head>
+<body>
+  <h1>Game Dare</h1>
+  <p><%= @selected_dare %></p>
+  <%= button_to "Refresh", games_show_path, method: :get %>
+</body>
+</html>
