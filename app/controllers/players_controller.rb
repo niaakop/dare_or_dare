@@ -14,6 +14,7 @@ class PlayersController < ApplicationController
   def create
     @player = Player.new(player_params)
     if @player.save
+      update_game_with_current_player(@player)
       redirect_to @player, notice: 'Player was successfully created.'
     else
       render :new
@@ -42,6 +43,11 @@ class PlayersController < ApplicationController
   private
 
   def player_params
-    params.require(:player).permit(:name, :gender)
+    params.require(:player).permit(:name, :gender, :game_id)
+  end
+
+  def update_game_with_current_player(player)
+    game = player.game
+    game.update(current_player_id: player.id) if game.present?
   end
 end

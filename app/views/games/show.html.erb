@@ -5,7 +5,8 @@
 </head>
 <body>
   <h1>Game Dare</h1>
-  <p><%= @selected_dare %></p>
-  <%= button_to "Refresh", games_show_path, method: :get %>
+  <p><%= @current_player.name %> - <%= @selected_dare %></p>
+  <%= button_to "Next", next_player_game_path(@game), method: :post %>
+  <%= button_to "Refresh", game_path(@game), method: :get %>
 </body>
 </html>

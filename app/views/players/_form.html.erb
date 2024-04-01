@@ -2,7 +2,6 @@
   <% if player.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(player.errors.count, "error") %> prohibited this player from being saved:</h2>
-
       <ul>
         <% player.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -18,7 +17,12 @@
 
   <div class="field">
     <%= form.label :gender %>
-    <%= form.text_field :gender %>
+    <%= form.collection_select :gender, ['Male', 'Female'], :to_s, :humanize, prompt: 'Select Gender' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :game_id, "Select Game" %>
+    <%= form.collection_select :game_id, Game.all, :id, :name, prompt: 'Select Game' %>
   </div>
 
   <div class="actions">
