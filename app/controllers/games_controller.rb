@@ -20,6 +20,13 @@ class GamesController < ApplicationController
     redirect_to game_path(@game)
   end
 
+  def next_dare
+    @game = Game.find(params[:id])
+    @game.update_selected_dare 
+    redirect_to game_path(@game)
+  end
+
+
   def edit
   end
 
