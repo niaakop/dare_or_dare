@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>All Games</title>
-</head>
-<body>
-  <h1>All Games</h1>
-  <% @games.each do |game| %>
-    <p><%= link_to game.name, game_path(game) %></p>
-  <% end %>
-  <%= link_to "New Game", new_game_path %>
-</body>
-</html>
+<% unless current_user.game %>
+  <%= link_to 'New Game', new_game_path %>
+<% end %>

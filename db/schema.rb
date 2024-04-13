@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_13_092048) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_13_094828) do
   create_table "dares", force: :cascade do |t|
     t.string "text"
     t.datetime "created_at", null: false
@@ -24,7 +24,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_13_092048) do
     t.integer "current_player_id"
     t.integer "selected_dare_id"
     t.text "used_dare_ids"
+    t.integer "user_id", null: false
     t.index ["selected_dare_id"], name: "index_games_on_selected_dare_id"
+    t.index ["user_id"], name: "index_games_on_user_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -49,5 +51,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_13_092048) do
   end
 
   add_foreign_key "games", "dares", column: "selected_dare_id"
+  add_foreign_key "games", "users"
   add_foreign_key "players", "games"
 end

@@ -1,5 +1,6 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :next_player]
+  before_action :authenticate_user!
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :next_player, :next_dare]
 
   def index
     @games = Game.all
@@ -12,6 +13,7 @@ class GamesController < ApplicationController
   end
 
   def new
+    redirect_to current_user.game, alert: 'You already have a game.' if current_user.game.present?
     @game = Game.new
   end
 
@@ -26,18 +28,20 @@ class GamesController < ApplicationController
     redirect_to game_path(@game)
   end
 
-
   def edit
   end
 
   def create
-    @game = Game.new(game_params)
-
+  if current_user.game.present?
+    redirect_to root_path, alert: 'You already have a game.'
+  else
+    @game = current_user.build_game(game_params)
     if @game.save
       redirect_to @game, notice: 'Game was successfully created.'
     else
       render :new
     end
+  end
   end
 
   def update
@@ -56,7 +60,8 @@ class GamesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_game
-      @game = Game.find(params[:id])
+      @game = current_user.game
+      redirect_to root_path, alert: 'No such game found.' unless @game
     end
 
     # Only allow a list of trusted parameters through.

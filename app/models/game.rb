@@ -1,6 +1,6 @@
 require 'pry' 
 class Game < ApplicationRecord
-  # has_one :selected_dare, class_name: "Dare"
+  belongs_to :user  
   has_many :players
   after_create :update_selected_dare
   serialize :used_dare_ids, Array, coder: YAML
