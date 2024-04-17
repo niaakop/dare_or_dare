@@ -37,12 +37,14 @@ class Game < ApplicationRecord
     @available_dare_ids -= self.used_dare_ids.to_set.to_a
 
     if @available_dare_ids.empty?
+      @available_dare_ids = Dare.pluck(:id).to_set # Reload all dare IDs
       self.used_dare_ids = []
-    else
-      self.selected_dare_id = @available_dare_ids.to_a.sample
     end
+    self.selected_dare_id = @available_dare_ids.to_a.sample
+
     save
-  end
+end
+
 
   def set_initial_player
     update(current_player_id: players.first.id) if players.any? && current_player_id.nil?
