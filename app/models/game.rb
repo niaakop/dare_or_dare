@@ -2,11 +2,16 @@ require 'pry'
 class Game < ApplicationRecord
   belongs_to :user  
   has_many :players
-  after_create :update_selected_dare
   serialize :used_dare_ids, Array, coder: YAML
+  after_create :set_initial_player
+  after_create :update_selected_dare
 
   def current_player
     Player.find_by(id: current_player_id)
+  end
+
+  def set_initial_player
+    update(current_player_id: players.first.id) if current_player_id.nil? && players.any?
   end
 
   def selected_dare
@@ -14,42 +19,32 @@ class Game < ApplicationRecord
   end
 
   def select_next_player
-    players_count = players.count
-    current_index = players.find_index { |player| player.id == current_player_id }
-    next_index = (current_index + 1) % players_count
-    next_player_id = players[next_index].id
+    game_players = self.players
+    return if game_players.empty?  
+    current_index = game_players.find_index { |player| player.id == current_player_id }
+    current_index = current_index.nil? ? 0 : current_index 
+    next_index = (current_index + 1) % game_players.count
+    next_player_id = game_players[next_index].id
+
     update(current_player_id: next_player_id)
     update_selected_dare
   end
 
   def update_selected_dare
-  @available_dare_ids = Dare.pluck(:id).to_set
-  p "available_dare_ids #{@available_dare_ids}"
-  p "used_dare_ids #{self.used_dare_ids}"
-  
-  self.used_dare_ids ||= [] # Ensure used_dare_ids is initialized as an empty array if it's nil
-  
-  # Add the selected dare ID to the used_dare_ids array
-  self.used_dare_ids << selected_dare_id unless selected_dare_id.nil? 
-  
-  p "used_dare_ids #{self.used_dare_ids}"
-  
-  @available_dare_ids -= self.used_dare_ids.to_set.to_a
-  
-  p "available_dare_ids #{@available_dare_ids}"
-  p "self.selected_dare_id #{self.selected_dare_id}"
+    @available_dare_ids = Dare.pluck(:id).to_set
+    self.used_dare_ids ||= []
+    self.used_dare_ids << selected_dare_id unless selected_dare_id.nil? 
+    @available_dare_ids -= self.used_dare_ids.to_set.to_a
 
-  if @available_dare_ids.empty?
-    self.used_dare_ids = [] # Reset used_dare_ids to an empty array
-    p "available_dare_ids.empty!!!"
-  else
-    # Set selected_dare_id to a random available dare ID
-    self.selected_dare_id = @available_dare_ids.to_a.sample
-    p "self.selected_dare_id #{self.selected_dare_id}"
+    if @available_dare_ids.empty?
+      self.used_dare_ids = []
+    else
+      self.selected_dare_id = @available_dare_ids.to_a.sample
+    end
+    save
   end
 
-  # Save the changes to the database
-  save
-end
-
+  def set_initial_player
+    update(current_player_id: players.first.id) if players.any? && current_player_id.nil?
+  end
 end

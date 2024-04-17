@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'home/index'
   devise_for :users
   get "up" => "rails/health#show", as: :rails_health_check
 
@@ -11,5 +12,5 @@ Rails.application.routes.draw do
 
   resources :players
 
-  root 'games#index'
+  root 'home#index'
 end

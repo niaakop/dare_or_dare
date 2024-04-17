@@ -1,10 +1,14 @@
 class PlayersController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_player, only: [:show, :edit, :update, :destroy]
+  after_action :ensure_current_player, only: [:create, :destroy]
+
 	def index
     @players = Player.all
   end
 
   def show
-    @player = Player.find(params[:id])
+    @players = current_user.game.players
   end
 
   def new
@@ -12,21 +16,20 @@ class PlayersController < ApplicationController
   end
 
   def create
-    @player = Player.new(player_params)
+    @player = current_user.game.players.build(player_params)
     if @player.save
-      update_game_with_current_player(@player)
-      redirect_to @player, notice: 'Player was successfully created.'
+      redirect_to players_url, notice: 'Player was successfully created.'
     else
       render :new
     end
   end
+
 
   def edit
     @player = Player.find(params[:id])
   end
 
   def update
-    @player = Player.find(params[:id])
     if @player.update(player_params)
       redirect_to @player, notice: 'Player was successfully updated.'
     else
@@ -34,20 +37,28 @@ class PlayersController < ApplicationController
     end
   end
 
+
   def destroy
-    @player = Player.find(params[:id])
+    if current_user.game.current_player_id == @player.id
+      current_user.game.select_next_player  
+    end
     @player.destroy
     redirect_to players_url, notice: 'Player was successfully destroyed.'
   end
 
+
   private
 
-  def player_params
-    params.require(:player).permit(:name, :gender, :game_id)
+  def set_player
+    @player = Player.find(params[:id])
   end
 
-  def update_game_with_current_player(player)
-    game = player.game
-    game.update(current_player_id: player.id) if game.present?
+  def player_params
+    params.require(:player).permit(:name, :gender)
+  end
+
+  def ensure_current_player
+    game = current_user.game
+    game.set_initial_player if game.current_player_id.nil?
   end
 end
