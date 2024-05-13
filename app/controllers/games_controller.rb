@@ -14,6 +14,7 @@ class GamesController < ApplicationController
 
   def next_player
     @game.select_next_player
+    @game.select_dare
     redirect_to game_path(@game)
   end
 

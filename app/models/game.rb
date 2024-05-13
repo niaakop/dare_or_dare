@@ -18,16 +18,14 @@ class Game < ApplicationRecord
   end
 
   def select_next_player
-    game_players = self.players
-    # players_ids = players.pluck(:id)
-    return if game_players.empty?  
-    current_index = game_players.find_index { |player| player.id == current_player_id }
-    current_index = current_index.nil? ? 0 : current_index 
-    next_index = (current_index + 1) % game_players.count
-    next_player_id = game_players[next_index].id
+    players_ids = players.order(:id).pluck(:id)
+    return if players.empty?
+    current_index = players_ids.find { |id| id == current_player_id }
+    current_index = Player.find_by(id: current_index).nil? ? 0 : current_index # current_index = 0 if current_player is nil 
+    next_index = (current_index + 1) % players_ids.count # if last ==> first 
+    next_player_id = players_ids[next_index]
 
     update(current_player_id: next_player_id)
-    select_dare
   end
 
   def select_dare
