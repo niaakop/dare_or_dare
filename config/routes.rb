@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     member do
       post 'next_player'
       post 'next_dare'
+      post 'restart'
     end
   end
 

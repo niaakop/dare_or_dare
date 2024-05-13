@@ -1,10 +1,9 @@
-require 'pry' 
 class Game < ApplicationRecord
   belongs_to :user  
   has_many :players
   serialize :used_dare_ids, Array, coder: YAML
   after_create :set_initial_player
-  after_create :update_selected_dare
+  after_create :select_dare
 
   def current_player
     Player.find_by(id: current_player_id)
@@ -20,6 +19,7 @@ class Game < ApplicationRecord
 
   def select_next_player
     game_players = self.players
+    # players_ids = players.pluck(:id)
     return if game_players.empty?  
     current_index = game_players.find_index { |player| player.id == current_player_id }
     current_index = current_index.nil? ? 0 : current_index 
@@ -27,24 +27,26 @@ class Game < ApplicationRecord
     next_player_id = game_players[next_index].id
 
     update(current_player_id: next_player_id)
-    update_selected_dare
+    select_dare
   end
 
-  def update_selected_dare
-    @available_dare_ids = Dare.pluck(:id).to_set
-    self.used_dare_ids ||= []
-    self.used_dare_ids << selected_dare_id unless selected_dare_id.nil? 
-    @available_dare_ids -= self.used_dare_ids.to_set.to_a
-
-    if @available_dare_ids.empty?
-      @available_dare_ids = Dare.pluck(:id).to_set # Reload all dare IDs
-      self.used_dare_ids = []
-    end
-    self.selected_dare_id = @available_dare_ids.to_a.sample
-
+  def select_dare
+    self.selected_dare_id = available_dares_ids.sample
+    self.used_dare_ids.push(selected_dare_id) unless selected_dare_id.nil?
     save
-end
+  end
 
+  def available_dares_ids
+    @available_dares_ids = Dare.pluck(:id).to_a - used_dare_ids.to_a  
+  end
+
+  def update_available_dares_ids
+    @available_dares_ids = Dare.pluck(:id).to_a
+    self.used_dare_ids = []
+    save
+  end
+
+  private
 
   def set_initial_player
     update(current_player_id: players.first.id) if players.any? && current_player_id.nil?

@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :next_player, :next_dare]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :next_player, :next_dare, :restart]
 
   def show
     @current_player = @game.current_player  
@@ -18,8 +18,13 @@ class GamesController < ApplicationController
   end
 
   def next_dare
-    @game.update_selected_dare 
+    @game.select_dare 
     redirect_to game_path(@game)
+  end
+
+  def restart
+    @game.update_available_dares_ids
+    next_dare
   end
 
   def edit
