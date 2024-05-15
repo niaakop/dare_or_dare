@@ -24,8 +24,8 @@ class GamesController < ApplicationController
   end
 
   def restart
-    @game.update_available_dares_ids
-    next_dare
+    @game.update(used_dare_ids: [])
+    next_dare  
   end
 
   def edit

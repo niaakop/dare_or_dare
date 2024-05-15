@@ -19,9 +19,12 @@ class Game < ApplicationRecord
 
   def select_next_player
     players_ids = players.order(:id).pluck(:id)
-    return if players.empty?
-    current_index = players_ids.find { |id| id == current_player_id }
-    current_index = Player.find_by(id: current_index).nil? ? 0 : current_index # current_index = 0 if current_player is nil 
+    return if players_ids.empty?
+    current_index = if current_player_id.present?
+      players_ids.find { |id| id == current_player_id }
+    else 
+      0
+    end
     next_index = (current_index + 1) % players_ids.count # if last ==> first 
     next_player_id = players_ids[next_index]
 
@@ -30,18 +33,12 @@ class Game < ApplicationRecord
 
   def select_dare
     self.selected_dare_id = available_dares_ids.sample
-    self.used_dare_ids.push(selected_dare_id) unless selected_dare_id.nil?
+    used_dare_ids.push(selected_dare_id) unless selected_dare_id.nil?
     save
   end
 
   def available_dares_ids
-    @available_dares_ids = Dare.pluck(:id).to_a - used_dare_ids.to_a  
-  end
-
-  def update_available_dares_ids
-    @available_dares_ids = Dare.pluck(:id).to_a
-    self.used_dare_ids = []
-    save
+    Dare.pluck(:id).to_a - used_dare_ids.to_a  
   end
 
   private
