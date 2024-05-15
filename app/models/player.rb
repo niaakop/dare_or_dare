@@ -1,4 +1,13 @@
 class Player < ApplicationRecord
   belongs_to :game
-  # belongs_to :team
+  before_destroy :adjust_game_current_player
+
+  validates :name, presence: true
+  validates :gender, presence: true
+
+  private
+
+  def adjust_game_current_player
+    game.select_next_player if game.current_player_id == id
+  end
 end

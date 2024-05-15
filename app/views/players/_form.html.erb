@@ -11,18 +11,17 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :name %>
+    <%= form.label :name do %>
+      Name <span class="required">*</span>
+    <% end %>
     <%= form.text_field :name %>
   </div>
 
   <div class="field">
-    <%= form.label :gender %>
-    <%= form.collection_select :gender, ['Male', 'Female'], :to_s, :humanize, prompt: 'Select Gender' %>
-  </div>
-
-  <div class="field">
-    <%= form.label :game_id, "Select Game" %>
-    <%= form.collection_select :game_id, Game.all, :id, :name, prompt: 'Select Game' %>
+    <%= form.label :gender do %>
+      Gender <span class="required">*</span>
+    <% end %>
+    <%= form.collection_select :gender, ['Male', 'Female', 'Other'], :to_s, :humanize, prompt: 'Select Gender' %>
   </div>
 
   <div class="actions">

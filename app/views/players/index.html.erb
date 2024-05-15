@@ -1,7 +1,17 @@
 <h1>All Players</h1>
-<ul>
-  <% @players.each do |player| %>
-    <li><%= player.name + " " + player.gender %></li>
-  <% end %>
-</ul>
-<%= link_to "New Player", new_player_path %>
+
+<% if current_user.game.present? %>
+  <ul>
+    <% @players.each do |player| %>
+      <li>
+        <%= "#{player.name} #{player.gender}" %>
+        <%= button_to 'Delete', player_path(player), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+      </li>
+    <% end %>
+  </ul>
+  <%= button_to 'Add Player', new_player_path, method: :get, class: 'btn btn-primary' %>
+  <%= button_to 'Go to Game', game_path(current_user.game), method: :get, class: 'btn btn-success' %>
+<% else %>
+  <p>You do not have an active game. Please create a game to start adding players.</p>
+  <%= button_to 'Create Game', new_game_path, method: :get, class: 'btn btn-primary' %>
+<% end %>

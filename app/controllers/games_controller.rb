@@ -1,13 +1,8 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :next_player, :next_dare]
-
-  def index
-    @games = Game.all
-  end
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :next_player, :next_dare, :restart]
 
   def show
-    @game = Game.find(params[:id])
     @current_player = @game.current_player  
     @selected_dare = @game.selected_dare
   end
@@ -19,29 +14,34 @@ class GamesController < ApplicationController
 
   def next_player
     @game.select_next_player
+    @game.select_dare
     redirect_to game_path(@game)
   end
 
   def next_dare
-    @game = Game.find(params[:id])
-    @game.update_selected_dare 
+    @game.select_dare 
     redirect_to game_path(@game)
+  end
+
+  def restart
+    @game.update(used_dare_ids: [])
+    next_dare  
   end
 
   def edit
   end
 
   def create
-  if current_user.game.present?
-    redirect_to root_path, alert: 'You already have a game.'
-  else
-    @game = current_user.build_game(game_params)
-    if @game.save
-      redirect_to @game, notice: 'Game was successfully created.'
+    if current_user.game.present?
+      redirect_to root_path, alert: 'You already have a game.'
     else
-      render :new
+      @game = current_user.build_game(game_params)
+      if @game.save
+        redirect_to new_player_path(game_id: @game.id), notice: 'Game was successfully created. Now add a player!'
+      else
+        render :new
+      end
     end
-  end
   end
 
   def update
@@ -58,14 +58,13 @@ class GamesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_game
-      @game = current_user.game
-      redirect_to root_path, alert: 'No such game found.' unless @game
-    end
 
-    # Only allow a list of trusted parameters through.
-    def game_params
-      params.require(:game).permit(:name)
-    end
+  def set_game
+    @game = current_user.game
+    redirect_to root_path, alert: 'No such game found.' unless @game
+  end
+
+  def game_params
+    params.require(:game).permit(:name)
+  end
 end
