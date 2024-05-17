@@ -10,11 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_13_094828) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_16_135710) do
   create_table "dares", force: :cascade do |t|
     t.string "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.integer "game_id"
+    t.string "template"
+    t.index ["game_id"], name: "index_dares_on_game_id"
+    t.index ["user_id"], name: "index_dares_on_user_id"
   end
 
   create_table "games", force: :cascade do |t|
@@ -50,6 +55,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_13_094828) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "dares", "games"
+  add_foreign_key "dares", "users"
   add_foreign_key "games", "dares", column: "selected_dare_id"
   add_foreign_key "games", "users"
   add_foreign_key "players", "games"
