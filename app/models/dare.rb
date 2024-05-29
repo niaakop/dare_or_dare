@@ -5,11 +5,10 @@ class Dare < ApplicationRecord
   validates :template, presence: true
 
   def construct_dare
-    dare_constructor = DareConstructor.new(self.template, self.game)
-    if self.game.present? 
+    if self.game.present? && self.template.present?
+    	dare_constructor = DareConstructor.new(self.template, self.game)
     	self.text = dare_constructor.construct_dare 
-    else
-    	self.text
     end
+    	self.text
   end
 end
