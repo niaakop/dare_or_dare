@@ -18,29 +18,28 @@ class DareConstructor
     @dare.gsub!("{target}", @current_player.name)
     replace_players("{female}", female_players)
     replace_players("{male}", male_players)
-    replace_players("{opposite}", @current_player.gender == 'Female' ? male_players : female_players)
-    replace_players("{same}", @current_player.gender == 'Male' ? male_players : female_players)
+    replace_players("{opposite}", @current_player.female? ? male_players : female_players)
+    replace_players("{same}", @current_player.male? ? male_players : female_players)
     replace_players("{any}", @players)
     @dare
   end
 
   private
 
-  def replace_players(placeholder, players)
-    while @dare.include?(placeholder) && players.any?
-      player = players.sample
+  def replace_players(placeholder, preselected_players)
+    while @dare.include?(placeholder) && preselected_players.any?
+      player = preselected_players.sample
       @dare.sub!(placeholder, player.name)
       @players.delete(player)
-      players.delete(player)
+      preselected_players.delete(player)
     end
-    @dare
   end
 
   def female_players
-    @players.select { |player| player.gender == 'Female' }
+    @players.select { |player| player.female? }
   end
 
   def male_players
-    @players.select { |player| player.gender == 'Male' }
+    @players.select { |player| player.male? }
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_16_135710) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_30_133956) do
   create_table "dares", force: :cascade do |t|
     t.string "text"
     t.datetime "created_at", null: false
@@ -36,10 +36,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_16_135710) do
 
   create_table "players", force: :cascade do |t|
     t.string "name"
-    t.string "gender"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "game_id"
+    t.integer "gender", null: false
     t.index ["game_id"], name: "index_players_on_game_id"
   end
 
