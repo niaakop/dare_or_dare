@@ -13,5 +13,7 @@ Rails.application.routes.draw do
 
   resources :players
 
+  resources :dares, only: [:index, :new, :create]
+
   root 'home#index'
 end

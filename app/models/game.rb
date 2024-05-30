@@ -20,11 +20,12 @@ class Game < ApplicationRecord
   def select_next_player
     players_ids = players.order(:id).pluck(:id)
     return if players_ids.empty?
+    
     current_index = if current_player_id.present?
-      players_ids.find { |id| id == current_player_id }
-    else 
-      0
-    end
+                      players_ids.index(current_player_id)
+                    else 
+                      0
+                    end
     next_index = (current_index + 1) % players_ids.count # if last ==> first 
     next_player_id = players_ids[next_index]
 

@@ -5,10 +5,11 @@
 </head>
 <body>
   <h1>Game Dare</h1>
-  <p><%= @current_player&.name %> - <%= @selected_dare.text unless @selected_dare == nil %></p>
+  <p><%= @current_player&.name %> - <%= @selected_dare.construct_dare unless @selected_dare == nil %></p>
   <%= button_to "Next", next_player_game_path(@game), method: :post %>
   <%= button_to "Refresh", next_dare_game_path(@game), method: :post %>
   <%= button_to "Restart", restart_game_path(@game), method: :post %>
   <%= button_to 'Players', players_path, method: :get, class: 'btn btn-primary' %>
+  <%= button_to 'Dares', dares_path, method: :get, class: 'btn btn-primary' %>
 </body>
 </html>
