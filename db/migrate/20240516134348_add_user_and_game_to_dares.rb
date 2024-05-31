@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUserAndGameToDares < ActiveRecord::Migration[7.1]
   def change
     add_reference :dares, :user, foreign_key: true

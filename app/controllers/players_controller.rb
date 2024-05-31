@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class PlayersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_player, only: [:show, :edit, :update, :destroy]
-  after_action :ensure_current_player, only: [:create, :destroy]
+  before_action :set_player, only: %i[show edit update destroy]
+  after_action :ensure_current_player, only: %i[create destroy]
 
-	def index
+  def index
     @players = Player.all
   end
 
@@ -15,37 +17,32 @@ class PlayersController < ApplicationController
     @player = Player.new
   end
 
+  def edit
+    @player = Player.find(params[:id])
+  end
+
   def create
     @player = current_user.game.players.build(player_params)
     if @player.save
-      redirect_to players_url, notice: 'Player was successfully created.'
+      redirect_to players_url, notice: 'Player was successfully created.' # rubocop:disable Rails/I18nLocaleTexts
     else
       render :new
     end
   end
 
-
-  def edit
-    @player = Player.find(params[:id])
-  end
-
   def update
     if @player.update(player_params)
-      redirect_to @player, notice: 'Player was successfully updated.'
+      redirect_to @player, notice: 'Player was successfully updated.' # rubocop:disable Rails/I18nLocaleTexts
     else
       render :edit
     end
   end
 
-
   def destroy
-    if current_user.game.current_player_id == @player.id
-      current_user.game.select_next_player  
-    end
-    @player.destroy
-    redirect_to players_url, notice: 'Player was successfully destroyed.'
+    current_user.game.select_next_player if current_user.game.current_player_id == @player.id
+    @player.destroy!
+    redirect_to players_url, notice: 'Player was successfully destroyed.' # rubocop:disable Rails/I18nLocaleTexts
   end
-
 
   private
 

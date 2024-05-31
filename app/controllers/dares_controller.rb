@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DaresController < ApplicationController
   before_action :authenticate_user!
 
@@ -14,12 +16,11 @@ class DaresController < ApplicationController
     @dare.user = current_user
     @dare.game = current_user.game
     if @dare.save
-      redirect_to dares_path(@dare), notice: 'Dare was successfully created.'
+      redirect_to dares_path(@dare), notice: 'Dare was successfully created.' # rubocop:disable Rails/I18nLocaleTexts
     else
       render :new
     end
   end
-
 
   private
 

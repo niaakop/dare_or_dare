@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeGenderToEnumInPlayers < ActiveRecord::Migration[6.1]
   def up
     # Add the new integer column
@@ -8,7 +10,7 @@ class ChangeGenderToEnumInPlayers < ActiveRecord::Migration[6.1]
     Player.find_each do |player|
       if player.gender.present?
         gender_value = player.gender.downcase
-        player.update_columns(gender_tmp: Player.genders[gender_value])
+        player.update_columns(gender_tmp: Player.genders[gender_value]) # rubocop:disable Rails/SkipsModelValidations
       end
     end
 
@@ -30,7 +32,7 @@ class ChangeGenderToEnumInPlayers < ActiveRecord::Migration[6.1]
     Player.reset_column_information
     Player.find_each do |player|
       if player.gender.present?
-        player.update_columns(gender_tmp: player.gender.titleize)
+        player.update_columns(gender_tmp: player.gender.titleize) # rubocop:disable Rails/SkipsModelValidations
       end
     end
 

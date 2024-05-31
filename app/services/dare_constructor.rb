@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Usage example:
 # game = Game.find_by(id:1)
 # template_1 = "Hey {target}, do smthg to {female}. Then do it with {male} and {opposite}. At last, do anything to {same} and {any}."
@@ -12,10 +14,10 @@ class DareConstructor
     @current_player = @game.current_player
   end
 
-  def construct_dare
+  def construct_dare # rubocop:disable Metrics/AbcSize
     @players = @game.players.where.not(id: @current_player.id).to_a
     @dare = @template.dup
-    @dare.gsub!("{target}", @current_player.name)
+    @dare.gsub!('{target}', @current_player.name)
     replace_players("{female}", female_players)
     replace_players("{male}", male_players)
     replace_players("{opposite}", @current_player.female? ? male_players : female_players)
