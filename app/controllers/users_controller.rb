@@ -1,32 +1,33 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
-	before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @user.update(user_params)
-      redirect_to @user, notice: 'User was successfully updated.'
+      redirect_to @user, notice: I18n.t('notices.user_updated')
     else
       render :edit
     end
   end
 
   def destroy
-    @user.destroy
-    redirect_to users_url, notice: 'User was successfully destroyed.'
+    @user.destroy!
+    redirect_to users_url, notice: I18n.t('notices.user_destroyed')
   end
 
   private
-    def set_user
-      @user = User.find(params[:id])
-    end
 
-    def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
-    end
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def user_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+  end
 end

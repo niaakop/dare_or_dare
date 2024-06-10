@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Player < ApplicationRecord
   belongs_to :game
   before_destroy :adjust_game_current_player

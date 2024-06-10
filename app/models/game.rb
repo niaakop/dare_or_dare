@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class Game < ApplicationRecord
   belongs_to :user  
-  has_many :players
+  has_many :players, dependent: :destroy
   serialize :used_dare_ids, Array, coder: YAML
   after_create :set_initial_player
   after_create :select_dare
@@ -10,7 +12,7 @@ class Game < ApplicationRecord
   end
 
   def set_initial_player
-    update(current_player_id: players.first.id) if current_player_id.nil? && players.any?
+    update!(current_player_id: players.first.id) if current_player_id.nil? && players.any?
   end
 
   def selected_dare
@@ -29,13 +31,13 @@ class Game < ApplicationRecord
     next_index = (current_index + 1) % players_ids.count # if last ==> first 
     next_player_id = players_ids[next_index]
 
-    update(current_player_id: next_player_id)
+    update!(current_player_id: next_player_id)
   end
 
   def select_dare
     self.selected_dare_id = available_dares_ids.sample
     used_dare_ids.push(selected_dare_id) unless selected_dare_id.nil?
-    save
+    save!
   end
 
   def available_dares_ids
@@ -45,6 +47,6 @@ class Game < ApplicationRecord
   private
 
   def set_initial_player
-    update(current_player_id: players.first.id) if players.any? && current_player_id.nil?
+    update!(current_player_id: players.first.id) if players.any? && current_player_id.nil?
   end
 end
