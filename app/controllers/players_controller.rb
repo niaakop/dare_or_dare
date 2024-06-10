@@ -24,7 +24,7 @@ class PlayersController < ApplicationController
   def create
     @player = current_user.game.players.build(player_params)
     if @player.save
-      redirect_to players_url, notice: 'Player was successfully created.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to players_url, notice: I18n.t('notices.player_created')
     else
       render :new
     end
@@ -32,7 +32,7 @@ class PlayersController < ApplicationController
 
   def update
     if @player.update(player_params)
-      redirect_to @player, notice: 'Player was successfully updated.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to @player, notice: I18n.t('notices.player_updated')
     else
       render :edit
     end
@@ -41,7 +41,7 @@ class PlayersController < ApplicationController
   def destroy
     current_user.game.select_next_player if current_user.game.current_player_id == @player.id
     @player.destroy!
-    redirect_to players_url, notice: 'Player was successfully destroyed.' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to players_url, notice: I18n.t('notices.player_destroyed')
   end
 
   private

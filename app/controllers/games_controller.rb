@@ -10,7 +10,7 @@ class GamesController < ApplicationController
   end
 
   def new
-    redirect_to current_user.game, alert: 'You already have a game.' if current_user.game.present? # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to current_user.game, alert: I18n.t('notices.game_already_exists') if current_user.game.present?
     @game = Game.new
   end
 
@@ -34,11 +34,11 @@ class GamesController < ApplicationController
 
   def create
     if current_user.game.present?
-      redirect_to root_path, alert: 'You already have a game.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to root_path, alert: I18n.t('notices.game_already_exists')
     else
       @game = current_user.build_game(game_params)
       if @game.save
-        redirect_to new_player_path(game_id: @game.id), notice: 'Game was successfully created. Now add a player!' # rubocop:disable Rails/I18nLocaleTexts
+        redirect_to new_player_path(game_id: @game.id), notice: I18n.t('notices.game_created_add_player')
       else
         render :new
       end
@@ -47,7 +47,7 @@ class GamesController < ApplicationController
 
   def update
     if @game.update(game_params)
-      redirect_to @game, notice: 'Game was successfully updated.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to @game, notice: I18n.t('notices.game_updated')
     else
       render :edit
     end
@@ -55,14 +55,14 @@ class GamesController < ApplicationController
 
   def destroy
     @game.destroy!
-    redirect_to games_url, notice: 'Game was successfully destroyed.' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to games_url, notice: I18n.t('notices.game_destroyed')
   end
 
   private
 
   def set_game
     @game = current_user.game
-    redirect_to root_path, alert: 'No such game found.' unless @game # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to root_path, alert: I18n.t('notices.game_not_found') unless @game
   end
 
   def game_params

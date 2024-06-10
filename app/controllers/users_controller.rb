@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      redirect_to @user, notice: 'User was successfully updated.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to @user, notice: I18n.t('notices.user_updated')
     else
       render :edit
     end
@@ -18,7 +18,7 @@ class UsersController < ApplicationController
 
   def destroy
     @user.destroy!
-    redirect_to users_url, notice: 'User was successfully destroyed.' # rubocop:disable Rails/I18nLocaleTexts
+    redirect_to users_url, notice: I18n.t('notices.user_destroyed')
   end
 
   private

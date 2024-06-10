@@ -16,7 +16,7 @@ class DaresController < ApplicationController
     @dare.user = current_user
     @dare.game = current_user.game
     if @dare.save
-      redirect_to dares_path(@dare), notice: 'Dare was successfully created.' # rubocop:disable Rails/I18nLocaleTexts
+      redirect_to @dare, notice: I18n.t('notices.dare_created')
     else
       render :new
     end
