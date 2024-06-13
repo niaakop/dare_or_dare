@@ -2,8 +2,8 @@
 
 class Game < ApplicationRecord
   belongs_to :user  
-  has_many :players, dependent: :destroy
-  serialize :used_dare_ids, Array, coder: YAML
+  has_many :players
+  serialize :used_dare_ids, type: Array, coder: YAML
   after_create :set_initial_player
   after_create :select_dare
 
