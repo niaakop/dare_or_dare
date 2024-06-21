@@ -3,13 +3,19 @@ require 'rails_helper'
 RSpec.describe Dare, type: :model do
   let(:user) { User.create!(email: 'test@example.com', password: 'password') }
   
-  it 'is valid with valid attributes' do
-    dare = Dare.new(text: 'Sample dare', template: 'Sample template', user: user)
-    expect(dare).to be_valid
+  context 'when there is text' do
+    let(:dare) { build(:dare, text: 'Sample dare', template: 'Sample template', user: user) }
+
+    it 'is valid' do
+      expect(dare).to be_valid
+    end
   end
 
-  it 'is not valid without text' do
-    dare = Dare.new(template: 'Sample template', user: user)
-    expect(dare).to_not be_valid
+  context 'when there is no text' do 
+    let(:dare) { build(:dare, template: 'Sample template', user: user) }
+    
+    it 'is not valid' do
+      expect(dare).to_not be_valid
+    end
   end
 end

@@ -34,6 +34,7 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
   config.fixture_path = "#{::Rails.root}/spec/fixtures"  # Correct the method name
 
   config.include Devise::Test::IntegrationHelpers, type: :request  # Include Devise helpers for request specs

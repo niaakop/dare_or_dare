@@ -5,6 +5,7 @@ class Dare < ApplicationRecord
   belongs_to :game, optional: true
 
   validates :template, presence: true
+  validates :text, presence: true
 
   def construct_dare
     if self.game.present? && self.template.present?
