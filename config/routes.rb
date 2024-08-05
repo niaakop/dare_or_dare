@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   resources :players
 
-  resources :dares
+  resources :dares, except: [:show]
 
   root 'home#index'
 end

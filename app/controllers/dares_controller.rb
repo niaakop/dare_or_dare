@@ -22,6 +22,15 @@ class DaresController < ApplicationController
     end
   end
 
+  def destroy
+    @dare = Dare.find(params[:id])
+    if @dare.present?
+      @dare.destroy
+    else
+      redirect_to dares_path
+    end
+  end
+
   private
 
   def dare_params
