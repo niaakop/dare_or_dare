@@ -1,7 +1,6 @@
-# frozen_string_literal: true
-
 class DaresController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_dare, only: [:edit, :update, :destroy]
 
   def index
     @dares = current_user.dares
@@ -9,6 +8,9 @@ class DaresController < ApplicationController
 
   def new
     @dare = current_user.dares.build
+  end
+
+  def edit
   end
 
   def create
@@ -22,7 +24,27 @@ class DaresController < ApplicationController
     end
   end
 
+  def update
+    if @dare.update(dare_params)
+      redirect_to @dare, notice: I18n.t('notices.dare_updated')
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    if @dare.present?
+      @dare.destroy
+    else
+      redirect_to dares_path
+    end
+  end
+
   private
+
+  def set_dare
+    @dare = Dare.find(params[:id])
+  end
 
   def dare_params
     params.require(:dare).permit(:template)

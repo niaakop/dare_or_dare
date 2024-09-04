@@ -2,8 +2,8 @@
 
 class Game < ApplicationRecord
   belongs_to :user  
-  has_many :players, dependent: :destroy
-  serialize :used_dare_ids, Array, coder: YAML
+  has_many :players
+  serialize :used_dare_ids, type: Array, coder: YAML
   after_create :set_initial_player
   after_create :select_dare
 
@@ -42,11 +42,5 @@ class Game < ApplicationRecord
 
   def available_dares_ids
     Dare.pluck(:id).to_a - used_dare_ids.to_a  
-  end
-
-  private
-
-  def set_initial_player
-    update!(current_player_id: players.first.id) if players.any? && current_player_id.nil?
   end
 end
