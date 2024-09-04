@@ -26,7 +26,7 @@ RSpec.describe "Dares", type: :request do
       end.to change(Dare, :count).by(1)
     end
   end
-  # add edit, update actions, edit view
+
   xdescribe "PATCH /update" do
     it "updates an existing Dare" do
       dare = Dare.create!(valid_attributes)

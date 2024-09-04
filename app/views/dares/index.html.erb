@@ -2,10 +2,13 @@
 
 <ul>
   <% @dares.each do |dare| %>
-    <li><%= dare.template %></li>
-        <%# <%= button_to 'Delete', dare_path(dare), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %> 
+    <li>
+      <%= dare.template %>
+      <%= link_to 'Edit', edit_dare_path(dare), class: 'btn btn-warning' %>
+      <%= button_to 'Delete', dare_path(dare), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+    </li>
   <% end %>
 </ul>
-</ul>
-  <%= button_to 'Add Dare', new_dare_path, method: :get, class: 'btn btn-primary' %>
-  <%= button_to 'Go to Game', game_path(current_user.game), method: :get, class: 'btn btn-success' %>
+
+<%= button_to 'Add Dare', new_dare_path, method: :get, class: 'btn btn-primary' %>
+<%= button_to 'Go to Game', game_path(current_user.game), method: :get, class: 'btn btn-success' %>

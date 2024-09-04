@@ -43,10 +43,4 @@ class Game < ApplicationRecord
   def available_dares_ids
     Dare.pluck(:id).to_a - used_dare_ids.to_a  
   end
-
-  private
-
-  def set_initial_player
-    update!(current_player_id: players.first.id) if players.any? && current_player_id.nil?
-  end
 end
