@@ -41,6 +41,6 @@ class Game < ApplicationRecord
   end
 
   def available_dares_ids
-    Dare.pluck(:id).to_a - used_dare_ids.to_a  
+    Dare.pluck(:id).to_a - used_dare_ids.map(&:to_i)  
   end
 end

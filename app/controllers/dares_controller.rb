@@ -6,6 +6,12 @@ class DaresController < ApplicationController
     @dares = current_user.dares
   end
 
+  def show
+    @dare = Dare.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to dares_path, alert: "Dare not found."
+  end
+
   def new
     @dare = current_user.dares.build
   end
